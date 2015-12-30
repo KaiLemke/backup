@@ -1,14 +1,22 @@
-# ~/.darrc
-#
+##################################################################################
+#                                                                                #
+# @path	~/.darrc                                                                 #
+# @author	Kai Lemke <kai.lemke91@gmx.de>                                   #      
+# @url		http://github.com/KaiLemke/dotfiles                              #
+#                                                                                #
+# Sections:                                                                      #
+#    01. par2 ... parchive redundancy                                            #
+#                                                                                #
+##################################################################################
 
-##############################################################
-# target: par2
+# 01. target: par2
+# ----------------
 # activates:
 #   - par2 file generation when creating an archive
 #   - par2 file verification and correction when testing an archive
 
 par2:
-  -B "/usr/share/doc/dar/html/samples/dar_par.dcf"
+  -B "$HOME/backup/dar_par.dcf"
 
 ##############################################################
 # target: compress-exclusion

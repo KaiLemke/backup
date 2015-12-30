@@ -11,6 +11,7 @@
 #    04. no-emacs-backup ... don't backup backup files                           #
 #    05. dry-run                                                                 #
 #    06. full-from-diff ... create full backup from differential one             #
+#    07. excludes ... exclude directories                                        #
 #                                                                                #
 ##################################################################################
 
@@ -119,3 +120,17 @@ dry-run:
 
 full-from-diff:
 -/ '{!(~I)}[Rr] {~S}[O*] P* ; {~s}[*o] *p'
+
+# 07. target: excludes
+# --------------------
+excludes:
+-D 
+-P .ICEauthority
+-P .Xauthority
+-P .cache
+-P .dbus
+-P .esd_auth
+-P .gksu.lock
+-P .gnupg
+-P .password-store
+-P Downloads

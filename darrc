@@ -13,6 +13,7 @@
 #    06. full-from-diff ... create full backup from differential one             #
 #    07. excludes ... exclude directories                                        #
 #    08. crypt                                                                   #
+#    09. home ... options for backup of $HOME   
 #                                                                                #
 ##################################################################################
 
@@ -140,3 +141,8 @@ excludes:
 # -----------------
 crypt:
 -B $HOME/.darcrypt
+
+# 09. target: home
+# ----------------
+home:
+-B backup/dar_home.dcf

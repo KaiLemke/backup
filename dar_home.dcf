@@ -1,0 +1,8 @@
+-zbzip2
+-aa
+excludes
+crypt
+par2
+compress-exlusion
+no-emacs-backup
+verbose

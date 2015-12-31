@@ -134,9 +134,12 @@ excludes:
 -P .gksu.lock
 -P .gnupg
 -P .password-store
+-P .surf/cache
+-P .surf/cookies.txt
 -P Downloads
+-P log/backup.log
 
 # 08. target: crypt
 # -----------------
 crypt:
--B .darcrypt
+-B .darcrypt.dcf

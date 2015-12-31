@@ -24,7 +24,7 @@
 #   - par2 file verification and correction when testing an archive
 
 par2:
-  -B "$HOME/backup/dar_par.dcf"
+  -B "backup/dar_par.dcf"
 
 # 02. target: compress-exclusion
 # ------------------------------
@@ -140,7 +140,7 @@ excludes:
 # 08. target: crypt
 # -----------------
 crypt:
--B $HOME/.darcrypt
+-B .darcrypt
 
 # 09. target: home
 # ----------------

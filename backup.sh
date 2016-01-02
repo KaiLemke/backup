@@ -52,6 +52,12 @@ testman() {
 	fi;
 }
 
+testdir() {
+	if [ ! -d $1 ];then
+		mkdir $1
+	fi;
+}
+
 bfull() {
 	dar -c $BASE-1=full-$YEAR -@ $BASE-1=full_cat-$YEAR $BHOME &&
 		$MHOME -A $BASE-1=full_cat-$YEAR $BASE-1=full-$YEAR
@@ -66,7 +72,18 @@ binc() {
 	dar -A $BASE-2=diff_cat-$YEAR-$WEEK -c $BASE-3=inc-$DATE -@ $BASE-3=inc_cat-$DATE $BHOME &&
 		$MHOME -A $BASE-3=inc_cat-$DATE $BASE-3=inc-$DATE
 }		# incremental backup of home directory and add to database
-	
+
+testb() {
+	if [ ! -f $1 ];then
+		echo "$2 backup for this year will be created."
+		echo
+		$3
+		echo
+		echo "$2 backup done."
+	else
+		echo "$2 backup is already done."
+	fi;
+}
 
 # 03. body
 # --------
@@ -74,9 +91,7 @@ binc() {
 warn $HOME
 
 # test, if there is a log dir
-if [ ! -d $HOME/log ];then
-	mkdir $HOME/log
-fi;
+testdir $HOME/log
 
 # test, if there is a dar_manager database
 testman
@@ -89,28 +104,7 @@ pacman -Qs > $HOME/log/paclist
 {
 	date +%Y-%m-%d@%T
 	echo "Running backup."
-	if [ ! -f "$BASE-1=full_cat-$YEAR.1.dar" ];then
-		echo "Full backup for this year will be created."
-		echo
-		bfull
-		echo
-		echo "Full backup done."
-	fi;
-	if [ ! -f "$BASE-2=diff_cat-$YEAR-$WEEK.1.dar" ];then
-		echo "Differential backup for this year will be created."
-		echo
-		bdiff
-		echo
-		echo "Differential backup done."
-		fi;
-	if [ ! -f "$BASE-3=inc_cat-$DATE.1.dar" ];then
-		echo "Incremental backup for this year will be created."
-		echo
-		binc
-		echo
-		echo "Incremental backup done."
-	else
-		echo "Backups are already up to date."
-		exit 1
-	fi;
+	testb "$BASE-1=full_cat-$YEAR.1.dar" Full bfull
+	testb "$BASE-2=diff_cat-$YEAR-$WEEK.1.dar" Differential bdiff
+	testb "$BASE-3=inc_cat-$DATE.1.dar" Incremental binc
 } > $HOME/log/backup.log

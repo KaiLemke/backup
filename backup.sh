@@ -24,7 +24,15 @@ WEEK=`date +%V`
 DAY=`date +%u`
 DATE=$YEAR-$WEEK-$DAY		# Date: Year - calendar week - day (ISO = Monday first)
 BACKUPDIR=/opt/backup/$USER
+
+# users home directory
 BASE=$BACKUPDIR/$HOST-$USER
+BKPFULL=$BASE-1=full-$YEAR	# Full backup
+CATFULL=$BASE-1=full_cat-$YEAR	# Catalogue of full backup
+BKPDIFF=$BASE-2=diff-$YEAR-$WEEK
+CATDIFF=$BASE-2=diff_cat-$YEAR-$WEEK
+BKPINC=$BASE-2=inc-$DATE
+CATINC=$BASE-2=inc_cat-$DATE
 BHOME="
          -R $HOME 
          -zbzip2 
@@ -46,27 +54,60 @@ warn() {
 	notify-send -u critical "$msg" &
 }		# Make shure, the system will not be shut down.
 
+testdir() {
+	if [ ! -d $1 ];then
+		mkdir $1
+	fi;
+}
+
 testman() {
 	if [ ! -f $BASE.dmd ];then
 		dar_manager -C $BASE.dmd
 	fi;
 }
 
-bfull() {
-	dar -c $BASE-1=full-$YEAR -@ $BASE-1=full_cat-$YEAR $BHOME &&
-		$MHOME -A $BASE-1=full_cat-$YEAR $BASE-1=full-$YEAR
+testb() {
+	if [ ! -f $1 ];then
+		echo "$2 backup for this year will be created."
+		echo
+		$3
+		echo
+		echo "$2 backup done."
+	else
+		echo "$2 backup is already done."
+	fi;
+}
+
+makefull() {
+	bkp=$1	# backup
+	cat=$2	# catalogue
+	opt=$3	# options
+	man=$4	# manager
+	dar -c $bkp -@ $cat $opt &&
+		$man -A $cat $bkp
+}		# full backup and add to database
+
+makediff() {
+	highcat=$1
+	bkp=$2
+	lowcat=$3
+	opt=$4
+	man=$5
+	dar -A $highcat -c $bkp -@ $lowcat $opt &&
+		$man -A $lowcat $bkp
+}		# differential / incremental backup and add to database
+
+fullhome() {
+	makefull $BKPFULL $CATFULL $BHOME $MHOME
 }		# full backup of home directory and add to database
 
-bdiff() {
-	dar -A $BASE-1=full_cat-$YEAR -c $BASE-2=diff-$YEAR-$WEEK -@ $BASE-2=diff_cat-$YEAR-$WEEK $BHOME &&
-		$MHOME -A $BASE-2=diff_cat-$YEAR-$WEEK $BASE-2=diff-$YEAR-$WEEK
-}		# differential backup of home directory and add to database
+diffhome() {
+	makediff $CATFULL $BKPDIFF $CATDIFF $BHOME $MHOME
+}
 
-binc() {
-	dar -A $BASE-2=diff_cat-$YEAR-$WEEK -c $BASE-3=inc-$DATE -@ $BASE-3=inc_cat-$DATE $BHOME &&
-		$MHOME -A $BASE-3=inc_cat-$DATE $BASE-3=inc-$DATE
-}		# incremental backup of home directory and add to database
-	
+inchome() {
+	makediff $CATDIFF $BKPINC $CATINC $BHOME $MHOME
+}
 
 # 03. body
 # --------
@@ -74,9 +115,7 @@ binc() {
 warn $HOME
 
 # test, if there is a log dir
-if [ ! -d $HOME/log ];then
-	mkdir $HOME/log
-fi;
+testdir $HOME/log
 
 # test, if there is a dar_manager database
 testman
@@ -89,28 +128,7 @@ pacman -Qs > $HOME/log/paclist
 {
 	date +%Y-%m-%d@%T
 	echo "Running backup."
-	if [ ! -f "$BASE-1=full_cat-$YEAR.1.dar" ];then
-		echo "Full backup for this year will be created."
-		echo
-		bfull
-		echo
-		echo "Full backup done."
-	fi;
-	if [ ! -f "$BASE-2=diff_cat-$YEAR-$WEEK.1.dar" ];then
-		echo "Differential backup for this year will be created."
-		echo
-		bdiff
-		echo
-		echo "Differential backup done."
-		fi;
-	if [ ! -f "$BASE-3=inc_cat-$DATE.1.dar" ];then
-		echo "Incremental backup for this year will be created."
-		echo
-		binc
-		echo
-		echo "Incremental backup done."
-	else
-		echo "Backups are already up to date."
-		exit 1
-	fi;
+	testb "$CATFULL.1.dar" Full fullhome
+	testb "$CATDIFF.1.dar" Differential diffhome
+	testb "$CATINC.1.dar" Incremental inchome
 } > $HOME/log/backup.log

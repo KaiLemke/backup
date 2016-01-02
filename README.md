@@ -14,6 +14,9 @@ In im my config it will encrypt the backups and create PAR2 repair files.
 
 # Installation
 
+Change the configs for your needs - at least correct your username in 
+*/home/kai/...* in darrc.
+
 Copy the files to the destination in their headers.
 The file containing encryption algorithm and password, 
 *.darcrypt.dcf*, of course you have to create by your own 
@@ -28,6 +31,8 @@ It's intended to be run by cron, e. g. using the following:
     # Every three hours check if backups it's necessary to do a backup.
     0 */3 * * * $HOME/bin/backup.sh
     
+If run manually, it must be run out of $HOME, 
+
 # License
 
 As far as the file itself does not refer to another license type,

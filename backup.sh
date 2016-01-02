@@ -36,15 +36,21 @@ BHOME="
 	 no-emacs-backup 
 	 verbose
 	 " 		# options for backup of home directory
-MHOME="dar_manager -B $BACKUPDIR/$HOST-$USER.dmd"		# use dar_manager database for host and user
+MHOME="dar_manager -B $BASE.dmd"		# use dar_manager database for host and user
 
 # 02. functions
 # -------------
 warn() {
-	msg="Starting backup for $HOME"
+	msg="Starting backup for $*"
 	wall -t 600 $msg &
 	notify-send -u critical "$msg" &
 }		# Make shure, the system will not be shut down.
+
+testman() {
+	if [ ! -f $BASE.dmd ];then
+		dar_manager -C $BASE.dmd
+	fi;
+}
 
 bfull() {
 	dar -c $BASE-1=full-$YEAR -@ $BASE-1=full_cat-$YEAR $BHOME &&
@@ -65,12 +71,15 @@ binc() {
 # 03. body
 # --------
 # first warn that backup will be build, so no-one will shutsdown during this process
-warn 
+warn $HOME
 
 # test, if there is a log dir
 if [ ! -d $HOME/log ];then
 	mkdir $HOME/log
 fi;
+
+# test, if there is a dar_manager database
+testman
 
 # save an actual list of intalled packages
 pacman -Qs > $HOME/log/paclist

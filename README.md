@@ -19,6 +19,8 @@ The file containing encryption algorithm and password,
 *.darcrypt.dcf*, of course you have to create by your own 
 (*-K* option of dar).
 
+Create a writable directory */opt/backup/$USER* or whatever you will name.
+
 # Usage
 
 It's intended to be run by cron, e. g. using the following:

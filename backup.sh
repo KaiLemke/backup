@@ -27,12 +27,14 @@ BACKUPDIR=/opt/backup/$USER
 
 # users home directory
 BASE=$BACKUPDIR/$HOST-$USER
+
+# users home directory
 BKPFULL=$BASE-1=full-$YEAR	# Full backup
 CATFULL=$BASE-1=full_cat-$YEAR	# Catalogue of full backup
 BKPDIFF=$BASE-2=diff-$YEAR-$WEEK
 CATDIFF=$BASE-2=diff_cat-$YEAR-$WEEK
-BKPINC=$BASE-2=inc-$DATE
-CATINC=$BASE-2=inc_cat-$DATE
+BKPINC=$BASE-3=inc-$DATE
+CATINC=$BASE-3=inc_cat-$DATE
 BHOME="
          -R $HOME 
          -zbzip2 
@@ -78,36 +80,20 @@ testb() {
 	fi;
 }
 
-makefull() {
-	bkp=$1	# backup
-	cat=$2	# catalogue
-	opt=$3	# options
-	man=$4	# manager
-	dar -c $bkp -@ $cat $opt &&
-		$man -A $cat $bkp
-}		# full backup and add to database
-
-makediff() {
-	highcat=$1
-	bkp=$2
-	lowcat=$3
-	opt=$4
-	man=$5
-	dar -A $highcat -c $bkp -@ $lowcat $opt &&
-		$man -A $lowcat $bkp
-}		# differential / incremental backup and add to database
-
 fullhome() {
-	makefull $BKPFULL $CATFULL $BHOME $MHOME
+	dar -c $BKPFULL -@ $CATFULL $BHOME &&
+		$MHOME -A $CATFULL $BKPFULL
 }		# full backup of home directory and add to database
 
 diffhome() {
-	makediff $CATFULL $BKPDIFF $CATDIFF $BHOME $MHOME
-}
+	dar -A $CATFULL -c $BKPDIFF -@ $CATDIFF $BHOME &&
+		$MHOME -A $CATDIFF $BKPDIFF
+}		# differential backup of home directory and add to database
 
 inchome() {
-	makediff $CATDIFF $BKPINC $CATINC $BHOME $MHOME
-}
+	dar -A $CATDIFF -c $BKPINC -@ $CATINC $BHOME &&
+		$MHOME -A $CATINC $BKPINC
+}		# incremental backup of home directory and add to database
 
 # 03. body
 # --------

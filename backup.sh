@@ -29,8 +29,10 @@ BACKUPDIR=/opt/backup/$USER
 BASE=$BACKUPDIR/$HOST-$USER
 
 # users home directory
-BKPFULL=$BASE-1=full-$YEAR	# Full backup
-CATFULL=$BASE-1=full_cat-$YEAR	# Catalogue of full backup
+BKPFULL1=$BASE-1.1=full-$YEAR	# Full backup
+CATFULL1=$BASE-1.1=full_cat-$YEAR	# Catalogue of full backup
+BKPFULL2=$BASE-1.2=full-$YEAR	# 2nd half of the year
+CATFULL2=$BASE-1.2=full_cat-$YEAR
 BKPDIFF=$BASE-2=diff-$YEAR-$WEEK
 CATDIFF=$BASE-2=diff_cat-$YEAR-$WEEK
 BKPINC=$BASE-3=inc-$DATE
@@ -80,13 +82,23 @@ testb() {
 	fi;
 }
 
-fullhome() {
-	dar -c $BKPFULL -@ $CATFULL $BHOME &&
-		$MHOME -A $CATFULL $BKPFULL
+fullhome1() {
+	dar -c $BKPFULL1 -@ $CATFULL1 $BHOME &&
+		$MHOME -A $CATFULL1 $BKPFULL1
 }		# full backup of home directory and add to database
 
-diffhome() {
-	dar -A $CATFULL -c $BKPDIFF -@ $CATDIFF $BHOME &&
+diffhome1() {
+	dar -A $CATFULL1 -c $BKPDIFF -@ $CATDIFF $BHOME &&
+		$MHOME -A $CATDIFF $BKPDIFF
+}		# differential backup of home directory and add to database
+
+fullhome2() {
+	dar -c $BKPFULL2 -@ $CATFULL2 $BHOME &&
+		$MHOME -A $CATFULL2 $BKPFULL2
+}		# full backup of home directory and add to database
+
+diffhome2() {
+	dar -A $CATFULL2 -c $BKPDIFF -@ $CATDIFF $BHOME &&
 		$MHOME -A $CATDIFF $BKPDIFF
 }		# differential backup of home directory and add to database
 
@@ -112,9 +124,23 @@ pacman -Qs > $HOME/log/paclist
 # Make backups (full yearly, differential weekly, incremental daily)
 # and save a log file
 {
-	date +%Y-%m-%d@%T
-	echo "Running backup."
-	testb "$CATFULL.1.dar" Full fullhome
-	testb "$CATDIFF.1.dar" Differential diffhome
-	testb "$CATINC.1.dar" Incremental inchome
+	echo "`date +%Y-%m-%d@%T`:   Running backup."
+	echo
+	if [ $WEEK -ge 27 ];then
+		echo "First half of the year."
+		echo
+		testb "$CATFULL1.1.dar" Full fullhome1
+		echo
+		testb "$CATDIFF.1.dar" Differential diffhome1
+		echo
+		testb "$CATINC.1.dar" Incremental inchome
+	else
+		echo "Second half of the year."
+		echo
+		testb "$CATFULL2.1.dar" Full fullhome2
+		echo
+		testb "$CATDIFF.1.dar" Differential diffhome2
+		echo
+		testb "$CATINC.1.dar" Incremental inchome
+	fi;
 } > $HOME/log/backup.log

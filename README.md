@@ -2,7 +2,7 @@
 
 This repository contains all configs and scripts 
 to run a backup of the home directory using DAR.
-It will run a full backup per year, 
+It will run two full backups per year, 
 a differential one per week and 
 an incremental one per day.
 In im my config it will encrypt the backups and create PAR2 repair files.

@@ -23,7 +23,7 @@
 #   - par2 file verification and correction when testing an archive
 
 par2:
-  -B "/home/kai/backup/dar_par.dcf"
+  -B /home/kai/backup/dar_par.dcf
 
 # 02. target: compress-exclusion
 # ------------------------------

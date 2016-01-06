@@ -5,7 +5,7 @@
 # @path	~/bin/backup_home.sh                                                     #
 # @author	Kai Lemke <kai.lemke91@gmx.de>                                   #      
 # @url		http://github.com/KaiLemke/backup                                #
-# @about	autostart with X server                                          #       
+# @about	backup home directory                                            #       
 #                                                                                #
 # Sections:                                                                      #
 # 	01. settings                                                             #

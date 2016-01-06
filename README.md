@@ -11,6 +11,7 @@ In im my config it will encrypt the backups and create PAR2 repair files.
 
 * [dar](http://dar.linux.free.fr)
 * [par2cmdline](https://github.com/BlackIkeEagle/par2cmdline)
+* [rsync](http://rsync.samba.org/)
 
 # Installation
 
@@ -26,12 +27,18 @@ Create a writable directory */opt/backup/$USER* or whatever you will name.
 
 # Usage
 
+## backup.sh
+
 It's intended to be run by cron, e. g. using the following:
 
     # Every three hours check if backups it's necessary to do a backup.
     0 */3 * * * /home/kai/bin/backup.sh
     
 If run manually, it must be run out of $HOME, 
+
+## bkp2disk.sh
+
+It's intended to be run manually, after mounting the target device.
 
 # License
 

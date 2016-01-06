@@ -11,6 +11,7 @@ In im my config it will encrypt the backups and create PAR2 repair files.
 
 * [dar](http://dar.linux.free.fr)
 * [par2cmdline](https://github.com/BlackIkeEagle/par2cmdline)
+* [rsync](http://rsync.samba.org/)
 
 # Installation
 

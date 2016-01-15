@@ -7,6 +7,9 @@ a differential one per week and
 an incremental one per day.
 In im my config it will encrypt the backups and create PAR2 repair files.
 
+Directories containing large files or sensitve data are backed up separately, 
+because this one is thought to be stored online.
+
 # Requirements
 
 * [dar](http://dar.linux.free.fr)

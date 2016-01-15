@@ -136,7 +136,11 @@ excludes:
 -P .password-store
 -P .surf/cache
 -P .surf/cookies.txt
+-P Bilder
 -P Downloads
+-P Musik
+-P Podcast
+-P Videos
 -P log/backup.log
 
 # 08. target: crypt
